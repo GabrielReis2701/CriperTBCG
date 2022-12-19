@@ -1,4 +1,5 @@
 #include <GL/gl.h>
+#include <iostream>
 #include <GL/glu.h>
 #include <GL/glut.h>
 #include <stdlib.h>
@@ -24,7 +25,7 @@ GLuint texture_id[MAX_NO_TEXTURES];
 
 
 float eyex = 0, eyey = y_min, eyez = ro_min;
-float angle = 0,anglex = 0,anglez = 0;
+float angle = 0,anglex = 0,anglez = 0,angleMX=-60,angleMY=-30,angleMz=0;
 int aux=0;
 
 void initTexture (void)
@@ -329,13 +330,14 @@ void display(void)
     glColor3f (1.0, 1.0, 1.0);
     
     /* Define a posição do observador */
-	gluLookAt(-40, -60, eyez, 0, 0, 0, 0, 1, 0);
+	gluLookAt(eyex, eyey, eyez, 0, 0, 0, 0, 1, 0);
 	glRotatef(angle, 0,1,0);
 	glRotatef(anglex, 1,0,0);
 	glRotatef(anglez, 0,0,1);
     
+    glTranslatef(angleMX,angleMY,angleMz);
     glPushMatrix();
-    	glScalef(10,10,10);
+    	glScalef(4,4,4);
 		drawMBat();
 
 	glPopMatrix();
@@ -343,10 +345,25 @@ void display(void)
 	glFlush();
 }
 
-void TimerFunc(int value) {
-	angle += 1; 
-    glutPostRedisplay();
-    glutTimerFunc( 33, TimerFunc, 1);
+void TimerFunc(int valor) {
+		if((angleMX>=-60 && angleMX <0) && (angleMY>=-30 && angleMY<30)){
+			angleMX = angleMX +1;
+			angleMY = angleMY +1;
+		}
+		if((angleMX>=0 && angleMX <60) && (angleMY<=30 && angleMY>0)){
+			angleMX = angleMX +2;
+			angleMY = angleMY -1;
+		}
+		if((angleMX<=60 && angleMX >0) && (angleMY<=0 && angleMY>-60)){
+			angleMX = angleMX -1;
+			angleMY = angleMY -1;
+		}
+		if((angleMX<=0 && angleMX >-60) && (angleMY>=-60 && angleMY<-30)){
+			angleMX = angleMX -2;
+			angleMY = angleMY +1;
+		}
+	    glutPostRedisplay();
+	    glutTimerFunc( 33, TimerFunc, 1);
 }
 
 void reshape(int width, int height) {
@@ -436,7 +453,7 @@ int main(int argc, char** argv)
     Determina o tamanho em pixels da
     janela a ser criada
     */
-    glutInitWindowSize (800, 800);
+    glutInitWindowSize (500, 500);
     
     /*
     Estabelece a posicao inicial para criacao da
@@ -461,6 +478,7 @@ int main(int argc, char** argv)
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutKeyboardFunc(key);
+    TimerFunc(1);
     
     /*
     Inicia a execucao do programa OpenGL.
