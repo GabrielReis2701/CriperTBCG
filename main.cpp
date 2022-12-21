@@ -362,6 +362,7 @@ void TimerFunc(int valor) {
 			angleMX = angleMX -2;
 			angleMY = angleMY +1;
 		}
+		//angle++;
 	    glutPostRedisplay();
 	    glutTimerFunc( 33, TimerFunc, 1);
 }
